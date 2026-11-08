@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -8,38 +9,77 @@ const errorHandler = require("./middleware/error.middleware");
 
 const app = express();
 
+// --------------------------------------------------
+// CORS CONFIGURATION
+// --------------------------------------------------
+
 const allowedOrigins = [
-  process.env.CLIENT_URL || "http://localhost:3000",
   "http://localhost:3000",
+
+  // Production
+  "https://portfolio-rahul-two-rho.vercel.app",
+
+  // Vercel deployments
+  /^https:\/\/portfolio-rahul-git-[a-z0-9-]+-rahulsharma3-9031s-projects\.vercel\.app$/,
+  /^https:\/\/portfolio-rahul-[a-z0-9-]+-rahulsharma3-9031s-projects\.vercel\.app$/,
 ];
 
 app.use(
   cors({
-    origin: (origin, cb) => {
-      // Postman / server-side requests ka origin nahi hota
-      if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-      return cb(new Error("CORS: origin allowed nahi hai"));
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+
+      const isAllowed = allowedOrigins.some((allowed) =>
+        allowed instanceof RegExp
+          ? allowed.test(origin)
+          : allowed === origin
+      );
+
+      if (isAllowed) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("CORS: Origin not allowed"));
     },
     credentials: true,
   })
 );
 
+// --------------------------------------------------
+// MIDDLEWARE
+// --------------------------------------------------
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
-app.get("/", (req, res) =>
-  res.json({ success: true, message: "Portfolio API chal rahi hai" })
-);
+// --------------------------------------------------
+// ROUTES
+// --------------------------------------------------
 
-app.get("/api/v1/health", (req, res) =>
-  res.json({ success: true, uptime: process.uptime() })
-);
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Portfolio API running",
+  });
+});
+
+app.get("/api/v1/health", (req, res) => {
+  res.json({
+    success: true,
+    uptime: process.uptime(),
+  });
+});
 
 app.use("/api/v1", routes);
 
-// Yeh dono hamesha SABSE AAKHIR me
+// --------------------------------------------------
+// ERROR HANDLING
+// --------------------------------------------------
+
 app.use(notFound);
 app.use(errorHandler);
 
