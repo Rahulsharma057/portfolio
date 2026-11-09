@@ -24,13 +24,20 @@ export default function AdminSkillsPage() {
         },
         { key: "order", label: "Order" },
       ]}
+      // Icon field jaan-boojhkar nahi hai: Skills section ab plain text me
+      // render hota hai, isliye icon kahin dikhta nahi. Model me field abhi bhi
+      // hai (purana data tootega nahi), bas form se hata di gayi hai.
       fields={[
         { name: "name", label: "Skill name", type: "text" },
         { name: "category", label: "Category", type: "select", options: CATEGORIES },
-        { name: "icon", label: "Icon (optional)", type: "image" },
-        { name: "order", label: "Order", type: "number" },
+        {
+          name: "order",
+          label: "Order",
+          type: "number",
+          help: "Chhota number pehle dikhta hai, category ke andar",
+        },
       ]}
-      emptyValues={{ name: "", category: "Frontend", icon: null, order: 0 }}
+      emptyValues={{ name: "", category: "Frontend", order: 0 }}
     />
   );
 }

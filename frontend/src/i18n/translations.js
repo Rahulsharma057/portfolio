@@ -54,6 +54,7 @@ const en = {
     Database: "Database",
     Tools: "Tools",
     Other: "Other",
+    all: "All",
   },
   experience: {
     overline: "Experience",
@@ -223,6 +224,7 @@ const hi = {
     Database: "डेटाबेस",
     Tools: "टूल्स",
     Other: "अन्य",
+    all: "सभी",
   },
   experience: {
     overline: "अनुभव",
@@ -392,6 +394,7 @@ const hinglish = {
     Database: "Database",
     Tools: "Tools",
     Other: "Other",
+    all: "Sab",
   },
   experience: {
     overline: "Experience",
